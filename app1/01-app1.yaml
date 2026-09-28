@@ -18,21 +18,25 @@ spec:
         env: dev
     spec:
       containers:
-      - name: app1
-        image: balaji1729/app1:v1
+        - name: app1
+          image: balaji1729/app1:v1
+          ports:
+            - containerPort: 80
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: service 
+  name: service
 spec:
   selector:
-      name: Alb
-      env: dev
+    name: Alb
+    env: dev
   ports:
     - protocol: TCP
-      port: 80 # service port
-      targetPort: 80 # container port
+      port: 80
+      targetPort: 80
+
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -44,17 +48,16 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/tags: Environment=dev,Project=roboshop
     alb.ingress.kubernetes.io/target-type: ip
-    # alb.ingress.kubernetes.io/group.name: roboshop
 spec:
   ingressClassName: alb
   rules:
-  - host: "app1.bongu.online"
-    http:
-      paths:
-      - path: "/"
-        pathType: Prefix
-        backend:
-          service:
-            name: service
-            port:
-              number: 80
+    - host: app1.bongu.online
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: service
+                port:
+                  number: 80
