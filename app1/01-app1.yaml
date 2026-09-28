@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-ingress
+  labels:
+    name: Alb
+    env: dev
+spec:
+  selector:
+    matchLabels:
+      name: Alb
+      env: dev
+  template:
+    metadata:
+      labels:
+        name: Alb
+        env: dev
+  spec:
+    containers:
+    - name: app1
+      image: balaji1729/app1:v1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service 
+spec:
+  selector:
+    matchLabels:
+      name: Alb
+      env: dev
+  ports:
+    - protocol: TCP
+      port: 80 # service port
+      targetPort: 80 # container port
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minimal-ingress
+spec:
+  ingressClassName: nginx-example
+  rules:
+  - host: "app1.bongu.online"
+    http:
+      paths:
+      - path: "/"
+        pathType: Prefix
+        backend:
+          service:
+            name: service
+            port:
+              number: 80
