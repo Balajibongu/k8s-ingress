@@ -27,7 +27,6 @@ metadata:
   name: service 
 spec:
   selector:
-    matchLabels:
       name: Alb
       env: dev
   ports:
