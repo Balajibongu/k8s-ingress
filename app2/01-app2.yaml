@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app2
+  labels:
+    name: roboshop
+    env: dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: roboshop
+      env: dev
+  template:
+    metadata:
+      labels:
+        name: roboshop
+        env: dev
+    spec:
+      containers:
+      - name: nginx
+        image: balaji1729/app2:v1
+        ports:
+          containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service
+spec:
+  type: LoadBalancer
+  selector:
+    name: roboshop
+    env: dev
+  ports:
+    protocol: TCP
+    port: 80
+    targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minimal-ingress
+  # annotations:
+  #   alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+  #   alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:832510228841:certificate/85d45863-01db-4a39-a4f8-a3b78294c7ab
+  #   alb.ingress.kubernetes.io/scheme: internet-facing
+  #   alb.ingress.kubernetes.io/tags: Environment=dev,Project=roboshop
+  #   alb.ingress.kubernetes.io/target-type: ip
+spec:
+  ingressClassName: alb
+  rules:
+    - host: app2.bongu.online
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: service
+                port:
+                  number: 80 
