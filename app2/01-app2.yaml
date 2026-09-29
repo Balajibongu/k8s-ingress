@@ -28,7 +28,7 @@ kind: Service
 metadata:
   name: service
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     name: roboshop
     env: dev
