@@ -29,6 +29,7 @@ kind: Service
 metadata:
   name: service
 spec:
+  type: LoadBalancer
   selector:
     name: Alb
     env: dev
