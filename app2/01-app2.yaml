@@ -28,7 +28,7 @@ kind: Service
 metadata:
   name: service
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     name: roboshop
     env: dev
